@@ -46,8 +46,8 @@
 Client::Client(QWidget *parent)
 :   QDialog(parent), networkSession(0)
 {
-    hostLabel = new QLabel(tr("&Server name:"));
-    portLabel = new QLabel(tr("S&erver port:"));
+    hostLabel = new QLabel(tr("P&eer IP:"));
+    portLabel = new QLabel(tr("&Port:"));
 
     hostCombo = new QComboBox;
     hostCombo->setEditable(true);
@@ -115,7 +115,7 @@ Client::Client(QWidget *parent)
     mainLayout->addWidget(buttonBox, 3, 0, 1, 2);
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Fortune Client"));
+    setWindowTitle(tr("Chat with a peer"));
     portLineEdit->setFocus();
 
     QNetworkConfigurationManager manager;

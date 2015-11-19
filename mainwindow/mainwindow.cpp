@@ -1,22 +1,22 @@
-#include "QRect"
-#include "QDesktopWidget"
+#include <QtWidgets>
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
+MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
+    textEdit = new QTextEdit();
+    quitButton = new QPushButton(tr("Quit"));
 
-    // Centers the window in the middle of the screen.
-    QRect position = frameGeometry();
-    position.moveCenter(QDesktopWidget().availableGeometry().center());
-    move(position.topLeft());
-}
+    textEdit->setReadOnly(true);
 
-MainWindow::~MainWindow()
-{
-    delete ui;
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->addStretch(1);
+    buttonLayout->addWidget(quitButton);
+    buttonLayout->addStretch(1);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(textEdit);
+    mainLayout->addLayout(buttonLayout);
+    setLayout(mainLayout);
+
+    setWindowTitle(tr("Your chat"));
 }

@@ -115,7 +115,7 @@ Client::Client(QWidget *parent)
     mainLayout->addWidget(buttonBox, 3, 0, 1, 2);
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Chat with a peer"));
+    setWindowTitle(tr("Connect to a peer"));
     portLineEdit->setFocus();
 
     QNetworkConfigurationManager manager;

@@ -48,7 +48,7 @@
 Server::Server(QWidget *parent)
 :   QDialog(parent), tcpServer(0), networkSession(0)
 {
-    statusLabel = new QLabel;
+    statusLabel = new QLabel();
     quitButton = new QPushButton(tr("Quit"));
     quitButton->setAutoDefault(false);
 

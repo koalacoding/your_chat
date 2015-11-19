@@ -1,9 +1,8 @@
 #include <QApplication>
 #include <QtNetwork>
 
-#include "mainwindow.h"
-#include "server.h"
-#include "client.h"
+#include "mainwindow/mainwindow.h"
+#include "server/server.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,9 +13,6 @@ int main(int argc, char *argv[])
     Server server;
     server.show();
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-
-    Client client;
-    client.show();
 
     return a.exec();
 }

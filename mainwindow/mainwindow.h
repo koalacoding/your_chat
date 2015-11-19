@@ -2,9 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QDialog>
+#include "client/client.h"
 
 class QTextEdit;
+class QLineEdit;
 class QPushButton;
+class Client;
 
 class MainWindow : public QDialog
 {
@@ -15,7 +18,8 @@ public:
 
 private:
     QTextEdit *textEdit;
-    QPushButton *quitButton;
+    QLineEdit *lineEdit;
+    QPushButton *connectButton;
 };
 
 #endif // MAINWINDOW_H

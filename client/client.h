@@ -58,15 +58,6 @@ class Client : public QDialog
 
 public:
     Client(QWidget *parent = 0);
-
-private slots:
-    void requestNewFortune();
-    void readFortune();
-    void displayError(QAbstractSocket::SocketError socketError);
-    void enableGetFortuneButton();
-    void sessionOpened();
-
-private:
     QLabel *hostLabel;
     QLabel *portLabel;
     QComboBox *hostCombo;
@@ -76,6 +67,14 @@ private:
     QPushButton *quitButton;
     QDialogButtonBox *buttonBox;
 
+private slots:
+    void requestNewFortune();
+    void readFortune();
+    void displayError(QAbstractSocket::SocketError socketError);
+    void enableGetFortuneButton();
+    void sessionOpened();
+
+private:
     QTcpSocket *tcpSocket;
     QString currentFortune;
     quint16 blockSize;

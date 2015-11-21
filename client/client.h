@@ -45,7 +45,6 @@
 #include <QTcpSocket>
 
 class QComboBox;
-class QDialogButtonBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -64,8 +63,6 @@ public:
     QLineEdit *portLineEdit;
     QLabel *statusLabel;
     QPushButton *getFortuneButton;
-    QPushButton *quitButton;
-    QDialogButtonBox *buttonBox;
 
 private slots:
     void requestNewFortune();

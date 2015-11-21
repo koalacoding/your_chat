@@ -48,12 +48,6 @@ Client::Client(QWidget *parent)
     getFortuneButton->setDefault(true);
     getFortuneButton->setEnabled(false);
 
-    quitButton = new QPushButton(tr("Quit"));
-
-    buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(getFortuneButton, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
-
     tcpSocket = new QTcpSocket(this);
 
     connect(hostCombo, SIGNAL(editTextChanged(QString)),
@@ -62,21 +56,10 @@ Client::Client(QWidget *parent)
             this, SLOT(enableGetFortuneButton()));
     connect(getFortuneButton, SIGNAL(clicked()),
             this, SLOT(requestNewFortune()));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(displayError(QAbstractSocket::SocketError)));
 
-    QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(hostLabel, 0, 0);
-    mainLayout->addWidget(hostCombo, 0, 1);
-    mainLayout->addWidget(portLabel, 1, 0);
-    mainLayout->addWidget(portLineEdit, 1, 1);
-    mainLayout->addWidget(statusLabel, 2, 0, 1, 2);
-    mainLayout->addWidget(buttonBox, 3, 0, 1, 2);
-    setLayout(mainLayout);
-
-    setWindowTitle(tr("Connect to a peer"));
     portLineEdit->setFocus();
 
     QNetworkConfigurationManager manager;

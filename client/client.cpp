@@ -10,8 +10,14 @@ Client::Client(QWidget *parent)
     hostLabel = new QLabel(tr("P&eer IP:"));
     portLabel = new QLabel(tr("&Port:"));
 
+
     hostCombo = new QComboBox;
     hostCombo->setEditable(true);
+
+
+    connectButton = new QPushButton(tr("Connect"));
+
+
     // find out name of this machine
     QString name = QHostInfo::localHostName();
     if (!name.isEmpty()) {

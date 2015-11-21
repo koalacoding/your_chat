@@ -45,9 +45,7 @@
 
 #include "server.h"
 
-Server::Server(QWidget *parent)
-:   QDialog(parent), tcpServer(0), networkSession(0)
-{
+Server::Server(QWidget *parent) : tcpServer(0), networkSession(0) {
     statusLabel = new QLabel();
 
     QNetworkConfigurationManager manager;
@@ -127,7 +125,7 @@ void Server::sessionOpened()
                             "\n\n"
                             "IP: %1"
                             "\n"
-                            "port: %2")
+                            "Port: %2")
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 

@@ -62,6 +62,7 @@ public:
     QComboBox *hostCombo;
     QLineEdit *portLineEdit;
     QLabel *statusLabel;
+    QPushButton *connectButton;
     QPushButton *getFortuneButton;
 
 private slots:

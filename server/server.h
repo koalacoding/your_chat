@@ -47,23 +47,22 @@ class QLabel;
 class QTcpServer;
 class QNetworkSession;
 
-class Server : public QDialog
-{
+class Server : public QWidget {
     Q_OBJECT
 
-public:
-    Server(QWidget *parent = 0);
+    public:
+        Server(QWidget *parent = 0);
 
-    QLabel *statusLabel;
+        QLabel *statusLabel;
 
-private slots:
-    void sessionOpened();
-    void sendFortune();
+    private slots:
+        void sessionOpened();
+        void sendFortune();
 
-private:
-    QTcpServer *tcpServer;
-    QStringList fortunes;
-    QNetworkSession *networkSession;
+    private:
+        QTcpServer *tcpServer;
+        QStringList fortunes;
+        QNetworkSession *networkSession;
 };
 
 #endif

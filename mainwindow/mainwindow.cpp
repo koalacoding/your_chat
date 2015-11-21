@@ -8,9 +8,11 @@
 -----------------------------*/
 
 MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
+    ChatMessages* chat_messages = new ChatMessages;
     Client* client = new Client;
     Server* server = new Server;
-    connectButton = new QPushButton(tr("Connect"));
+
+    setWindowTitle(tr("Your Chat"));
 
     generateChatGrid();
     generateConnectGrid(client);
@@ -22,11 +24,6 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
     mainLayout->addWidget(connectGridGroupBox);
     mainLayout->addWidget(yourInformationsGridGroupBox);
     setLayout(mainLayout);
-
-    setWindowTitle(tr("Your chat"));
-
-    connect(connectButton, SIGNAL(clicked()),
-            client, SLOT(requestNewFortune()));
 }
 
 
@@ -66,16 +63,17 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         connectGridGroupBox = new QGroupBox(tr("Connect to a peer"));
         QGridLayout *layout = new QGridLayout;
 
-        connectButton = new QPushButton(tr("Connect"));
-
         layout->addWidget(client->hostLabel, 0, 0, 1, 1);
         layout->addWidget(client->hostCombo, 0, 1, 1, 4);
         layout->addWidget(client->portLabel, 1, 0, 1, 1);
         layout->addWidget(client->portLineEdit, 1, 1, 1, 4);
         layout->addWidget(client->statusLabel, 2, 1, 1, 3);
-        layout->addWidget(connectButton, 3, 2, 1, 1);
+        layout->addWidget(client->connectButton, 3, 2, 1, 1);
 
         connectGridGroupBox->setLayout(layout);
+
+        connect(client->connectButton, SIGNAL(clicked()),
+                client, SLOT(requestNewFortune()));
     }
 
     /*-------------------------------------------------

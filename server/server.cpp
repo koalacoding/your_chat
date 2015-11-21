@@ -49,8 +49,6 @@ Server::Server(QWidget *parent)
 :   QDialog(parent), tcpServer(0), networkSession(0)
 {
     statusLabel = new QLabel();
-    quitButton = new QPushButton(tr("Quit"));
-    quitButton->setAutoDefault(false);
 
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
@@ -84,20 +82,7 @@ Server::Server(QWidget *parent)
                  << tr("You cannot kill time without injuring eternity.")
                  << tr("Computers are not intelligent. They only think they are.");
 
-        connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
         connect(tcpServer, SIGNAL(newConnection()), this, SLOT(sendFortune()));
-
-        QHBoxLayout *buttonLayout = new QHBoxLayout;
-        buttonLayout->addStretch(1);
-        buttonLayout->addWidget(quitButton);
-        buttonLayout->addStretch(1);
-
-        QVBoxLayout *mainLayout = new QVBoxLayout;
-        mainLayout->addWidget(statusLabel);
-        mainLayout->addLayout(buttonLayout);
-        setLayout(mainLayout);
-
-        setWindowTitle(tr("Fortune Server"));
 }
 
 void Server::sessionOpened()
@@ -138,8 +123,11 @@ void Server::sessionOpened()
     // if we did not find one, use IPv4 localhost
     if (ipAddress.isEmpty())
         ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
-    statusLabel->setText(tr("The server is running on\n\nIP: %1\nport: %2\n\n"
-                            "Run the Fortune Client example now.")
+    statusLabel->setText(tr("Peers can connect to you with these informations :"
+                            "\n\n"
+                            "IP: %1"
+                            "\n"
+                            "port: %2")
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 

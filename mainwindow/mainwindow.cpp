@@ -8,21 +8,19 @@
 -----------------------------*/
 
 MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
-    connectButton = new QPushButton(tr("Connect"));
     Client* client = new Client;
+    Server* server = new Server;
+    connectButton = new QPushButton(tr("Connect"));
 
     generateChatGrid();
     generateConnectGrid(client);
+    generateYourInformationsGrid(server);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    /*QGridLayout *firstLayout = new QGridLayout;
-
-    QGridLayout *tempLayout = new QGridLayout;
-    tempLayout->addWidget(connectButton, 3, 1, 1, 1);
-    gridGroupBox->setLayout(tempLayout);*/
 
     mainLayout->addWidget(chatGridGroupBox);
     mainLayout->addWidget(connectGridGroupBox);
+    mainLayout->addWidget(yourInformationsGridGroupBox);
     setLayout(mainLayout);
 
     setWindowTitle(tr("Your chat"));
@@ -78,4 +76,17 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         layout->addWidget(connectButton, 3, 2, 1, 1);
 
         connectGridGroupBox->setLayout(layout);
+    }
+
+    /*-------------------------------------------------
+    ----------GENERATE YOUR INFORMATIONS GRID----------
+    -------------------------------------------------*/
+
+    void MainWindow::generateYourInformationsGrid(Server* server) {
+        yourInformationsGridGroupBox = new QGroupBox(tr("Your informations"));
+        QGridLayout *layout = new QGridLayout;
+
+        layout->addWidget(server->statusLabel, 0, 0, 1, 1);
+
+        yourInformationsGridGroupBox->setLayout(layout);
     }

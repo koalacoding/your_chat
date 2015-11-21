@@ -6,13 +6,11 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    QApplication app(argc, argv);
+    MainWindow main_window;
+    main_window.show();
 
-    Server server;
-    server.show();
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 
-    return a.exec();
+    return app.exec();
 }

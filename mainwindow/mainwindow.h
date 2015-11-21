@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QDialog>
+
+#include "server/server.h"
 #include "client/client.h"
 
 class QGroupBox;
@@ -9,6 +11,7 @@ class QTextEdit;
 class QLineEdit;
 class QPushButton;
 
+class Server;
 class Client;
 
 class MainWindow : public QDialog
@@ -38,6 +41,15 @@ private:
 
     QGroupBox *connectGridGroupBox;
     QPushButton *connectButton;
+
+    /*----------------------------------------
+    ----------YOUR INFORMATIONS GRID----------
+    ----------------------------------------*/
+
+    void generateYourInformationsGrid(Server* server);
+
+    QGroupBox *yourInformationsGridGroupBox;
+
 };
 
 #endif // MAINWINDOW_H

@@ -58,6 +58,7 @@ class Server : public QWidget {
     private slots:
         void sessionOpened();
         void sendFortune();
+        void sendMessage(QString);
 
     private:
         QTcpServer *tcpServer;

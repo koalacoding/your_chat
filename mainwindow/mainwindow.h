@@ -46,6 +46,8 @@ private:
         void generateConnectGrid(Client* client);
 
         QGroupBox *connectGridGroupBox;
+        QPushButton *connect_button;
+        QPushButton *disconnect_button;
 
         /*----------------------------------------
         ----------YOUR INFORMATIONS GRID----------

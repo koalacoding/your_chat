@@ -10,16 +10,16 @@ Client::Client(QWidget *parent)
     hostLabel = new QLabel(tr("P&eer IP:"));
     portLabel = new QLabel(tr("&Port:"));
 
-
     hostCombo = new QComboBox;
     hostCombo->setEditable(true);
 
-
     connectButton = new QPushButton(tr("Connect"));
 
-
-    // find out name of this machine
+    QTime time;
     QString name = QHostInfo::localHostName();
+
+    time.start();
+
     if (!name.isEmpty()) {
         hostCombo->addItem(name);
         QString domain = QHostInfo::localDomainName();
@@ -60,9 +60,7 @@ Client::Client(QWidget *parent)
             this, SLOT(enableGetFortuneButton()));
     connect(portLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(enableGetFortuneButton()));
-    connect(getFortuneButton, SIGNAL(clicked()),
-            this, SLOT(requestNewFortune()));
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
+
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(displayError(QAbstractSocket::SocketError)));
 
@@ -92,9 +90,10 @@ Client::Client(QWidget *parent)
     }
 }
 
-void Client::requestNewFortune()
+void Client::ConnectToServer(QWidget* connect_button)
 {
-    getFortuneButton->setEnabled(false);
+    std::cout << "n" << std::endl;
+    connect_button->setEnabled(false);
     blockSize = 0;
     tcpSocket->abort();
     tcpSocket->connectToHost(hostCombo->currentText(),
@@ -183,4 +182,12 @@ void Client::sessionOpened()
                             "Fortune Server example as well."));
 
     enableGetFortuneButton();
+}
+
+/*----------------------------
+----------DISCONNECT----------
+----------------------------*/
+
+void Client::DisconnectFromServer() {
+    tcpSocket->abort();
 }

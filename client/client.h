@@ -66,11 +66,22 @@ public:
     QPushButton *getFortuneButton;
 
 private slots:
-    void requestNewFortune();
     void readFortune();
     void displayError(QAbstractSocket::SocketError socketError);
     void enableGetFortuneButton();
     void sessionOpened();
+
+    /*-------------------------
+    ----------CONNECT----------
+    -------------------------*/
+
+    void ConnectToServer(QWidget*);
+
+    /*----------------------------
+    ----------DISCONNECT----------
+    ----------------------------*/
+
+    void DisconnectFromServer();
 
 private:
     QTcpSocket *tcpSocket;

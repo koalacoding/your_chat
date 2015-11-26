@@ -63,19 +63,27 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
     void MainWindow::generateConnectGrid(Client* client) {
         connectGridGroupBox = new QGroupBox(tr("Connect to a peer"));
+        connect_button = new QPushButton(tr("Connect"));
+        disconnect_button = new QPushButton(tr("Disconnect"));
         QGridLayout *layout = new QGridLayout;
+        QSignalMapper* signalMapper = new QSignalMapper (this) ;
 
         layout->addWidget(client->hostLabel, 0, 0, 1, 1);
         layout->addWidget(client->hostCombo, 0, 1, 1, 4);
         layout->addWidget(client->portLabel, 1, 0, 1, 1);
         layout->addWidget(client->portLineEdit, 1, 1, 1, 4);
         layout->addWidget(client->statusLabel, 2, 1, 1, 3);
-        layout->addWidget(client->connectButton, 3, 2, 1, 1);
+        layout->addWidget(connect_button, 3, 2, 1, 1);
+        layout->addWidget(disconnect_button, 4, 2, 1, 1);
 
         connectGridGroupBox->setLayout(layout);
 
-        connect(client->connectButton, SIGNAL(clicked()),
-                client, SLOT(requestNewFortune()));
+        connect(connect_button, SIGNAL(clicked()), signalMapper, SLOT(map()));
+        signalMapper->setMapping(connect_button, connect_button);
+        connect(signalMapper, SIGNAL(mapped(QWidget*)), client, SLOT(ConnectToServer(QWidget*)));
+
+        connect(disconnect_button, SIGNAL(clicked()),
+                client, SLOT(DisconnectFromServer()));
     }
 
     /*-------------------------------------------------
@@ -91,31 +99,39 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         yourInformationsGridGroupBox->setLayout(layout);
     }
 
-/*-------------------------------------------------
-----------GET SEND MESSAGE LINE EDIT TEXT----------
--------------------------------------------------*/
 
-QString MainWindow::GetSendMessageLineEditText() {
-    return send_message_line_edit->text();
-}
+/*---------------------------------------------
+-----------------------------------------------
+-----------------SENT MESSAGE------------------
+-----------------------------------------------
+---------------------------------------------*/
 
 
-/*--------------------------------------------------------
-----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
---------------------------------------------------------*/
+    /*-------------------------------------------------
+    ----------GET SEND MESSAGE LINE EDIT TEXT----------
+    -------------------------------------------------*/
 
-void MainWindow::AddSentMessageToMessagesTextEdit() {
-    QString sent_message = GetSendMessageLineEditText();
-
-    /* If the message is empty, we don't send it to the peer
-       and don't add it to the messages text edit. */
-    if (sent_message == tr("")) {
-        return;
+    QString MainWindow::GetSendMessageLineEditText() {
+        return send_message_line_edit->text();
     }
 
-    QString formatted_message = tr("You > ") + sent_message;
 
-    messages_text_edit->append(formatted_message);
+    /*--------------------------------------------------------
+    ----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
+    --------------------------------------------------------*/
 
-    send_message_line_edit->setText(tr(""));
-}
+    void MainWindow::AddSentMessageToMessagesTextEdit() {
+        QString sent_message = GetSendMessageLineEditText();
+
+        /* If the message is empty, we don't send it to the peer
+           and don't add it to the messages text edit. */
+        if (sent_message == tr("")) {
+            return;
+        }
+
+        QString formatted_message = tr("You > ") + sent_message;
+
+        messages_text_edit->append(formatted_message);
+
+        send_message_line_edit->setText(tr(""));
+    }

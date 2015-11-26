@@ -8,7 +8,6 @@
 -----------------------------*/
 
 MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
-    ChatMessages* chat_messages = new ChatMessages;
     Client* client = new Client;
     Server* server = new Server;
 

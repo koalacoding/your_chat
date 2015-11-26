@@ -16,9 +16,7 @@ SOURCES += main.cpp\
            mainwindow/mainwindow.cpp \
            client/client.cpp \
            server/server.cpp \
-           chatmessages/chatmessages.cpp
 
 HEADERS  += mainwindow/mainwindow.h \
             client/client.h \
             server/server.h \
-            chatmessages/chatmessages.h

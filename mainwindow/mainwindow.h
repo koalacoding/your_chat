@@ -3,7 +3,6 @@
 
 #include <QDialog>
 
-#include "chatmessages/chatmessages.h"
 #include "server/server.h"
 #include "client/client.h"
 
@@ -12,7 +11,6 @@ class QTextEdit;
 class QLineEdit;
 class QPushButton;
 
-class ChatMessages;
 class Server;
 class Client;
 

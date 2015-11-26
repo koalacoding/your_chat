@@ -164,7 +164,6 @@ void Server::sendFortune()
 }
 
 void Server::SendMessage(QString message) {
-    std::cout << "Message sent" << std::endl;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);

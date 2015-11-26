@@ -128,6 +128,8 @@ void Client::ConnectToServer(QWidget* connect_button)
         QString message;
         in >> message;
 
+        blockSize = 0;
+
         SetLastMessageReceived(message);
         EmitMessageReceivedSignal();
     }

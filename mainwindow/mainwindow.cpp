@@ -119,7 +119,9 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
     void MainWindow::AddReceivedMessageToMessagesTextEdit() {
         QString message = client->GetLastMessageReceived();
-        std::cout << message.toStdString() << std::endl;
+        QString formatted_message = tr("Peer > ") + message;
+
+        messages_text_edit->append(formatted_message);
     }
 
     /*---------------------------------------------

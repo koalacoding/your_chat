@@ -41,15 +41,18 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         chatGridGroupBox = new QGroupBox(tr("Chat"));
         QGridLayout *layout = new QGridLayout;
 
-        textEdit = new QTextEdit();
-        lineEdit = new QLineEdit();
+        messages_text_edit = new QTextEdit();
+        send_message_line_edit = new QLineEdit();
         sendMessageButton = new QPushButton(tr("Send"));
 
-        textEdit->setReadOnly(true);
+        messages_text_edit->setReadOnly(true);
 
-        layout->addWidget(textEdit, 0, 0, 1, 3);
-        layout->addWidget(lineEdit, 1, 0, 1, 3);
+        layout->addWidget(messages_text_edit, 0, 0, 1, 3);
+        layout->addWidget(send_message_line_edit, 1, 0, 1, 3);
         layout->addWidget(sendMessageButton, 2, 1, 1, 1);
+
+        connect(sendMessageButton, SIGNAL(clicked()), this,
+                SLOT(AddSentMessageToMessagesTextEdit()));
 
         chatGridGroupBox->setLayout(layout);
     }
@@ -87,3 +90,32 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
         yourInformationsGridGroupBox->setLayout(layout);
     }
+
+/*-------------------------------------------------
+----------GET SEND MESSAGE LINE EDIT TEXT----------
+-------------------------------------------------*/
+
+QString MainWindow::GetSendMessageLineEditText() {
+    return send_message_line_edit->text();
+}
+
+
+/*--------------------------------------------------------
+----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
+--------------------------------------------------------*/
+
+void MainWindow::AddSentMessageToMessagesTextEdit() {
+    QString sent_message = GetSendMessageLineEditText();
+
+    /* If the message is empty, we don't send it to the peer
+       and don't add it to the messages text edit. */
+    if (sent_message == tr("")) {
+        return;
+    }
+
+    QString formatted_message = tr("You > ") + sent_message;
+
+    messages_text_edit->append(formatted_message);
+
+    send_message_line_edit->setText(tr(""));
+}

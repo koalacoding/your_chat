@@ -22,33 +22,48 @@ public:
     MainWindow(QWidget *parent = 0);
 
 private:
-    /*---------------------------
-    ----------CHAT GRID----------
-    ---------------------------*/
+    /*-----------------------------------------------
+    -------------------------------------------------
+    -----------------GENERATE GRIDS------------------
+    -------------------------------------------------
+    -----------------------------------------------*/
 
-    void generateChatGrid();
+        /*---------------------------
+        ----------CHAT GRID----------
+        ---------------------------*/
 
-    QGroupBox *chatGridGroupBox;
-    QTextEdit *textEdit;
-    QLineEdit *lineEdit;
-    QPushButton *sendMessageButton;
+        void generateChatGrid();
 
-    /*------------------------------
-    ----------CONNECT GRID----------
-    ------------------------------*/
+        QGroupBox *chatGridGroupBox;
+        QTextEdit *messages_text_edit;
+        QLineEdit *send_message_line_edit;
+        QPushButton *sendMessageButton;
 
-    void generateConnectGrid(Client* client);
+        /*------------------------------
+        ----------CONNECT GRID----------
+        ------------------------------*/
 
-    QGroupBox *connectGridGroupBox;
+        void generateConnectGrid(Client* client);
 
-    /*----------------------------------------
-    ----------YOUR INFORMATIONS GRID----------
-    ----------------------------------------*/
+        QGroupBox *connectGridGroupBox;
 
-    void generateYourInformationsGrid(Server* server);
+        /*----------------------------------------
+        ----------YOUR INFORMATIONS GRID----------
+        ----------------------------------------*/
 
-    QGroupBox *yourInformationsGridGroupBox;
+        void generateYourInformationsGrid(Server* server);
 
+        QGroupBox *yourInformationsGridGroupBox;
+
+
+    /*-------------------------------------------------
+    ----------GET SEND MESSAGE LINE EDIT TEXT----------
+    -------------------------------------------------*/
+
+    QString GetSendMessageLineEditText();
+
+private slots:
+    void AddSentMessageToMessagesTextEdit();
 };
 
 #endif // MAINWINDOW_H

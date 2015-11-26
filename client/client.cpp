@@ -13,12 +13,7 @@ Client::Client(QWidget *parent)
     hostCombo = new QComboBox;
     hostCombo->setEditable(true);
 
-    connectButton = new QPushButton(tr("Connect"));
-
-    QTime time;
     QString name = QHostInfo::localHostName();
-
-    time.start();
 
     if (!name.isEmpty()) {
         hostCombo->addItem(name);
@@ -50,19 +45,12 @@ Client::Client(QWidget *parent)
     statusLabel = new QLabel(tr("This examples requires that you run the "
                                 "Fortune Server example as well."));
 
-    getFortuneButton = new QPushButton(tr("Connect"));
-    getFortuneButton->setDefault(true);
-    getFortuneButton->setEnabled(false);
-
     tcpSocket = new QTcpSocket(this);
 
-    connect(hostCombo, SIGNAL(editTextChanged(QString)),
-            this, SLOT(enableGetFortuneButton()));
-    connect(portLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(enableGetFortuneButton()));
+    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this,
+            SLOT(displayError(QAbstractSocket::SocketError)));
 
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(displayError(QAbstractSocket::SocketError)));
+    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(ReadMessage()));
 
     portLineEdit->setFocus();
 
@@ -84,50 +72,81 @@ Client::Client(QWidget *parent)
         networkSession = new QNetworkSession(config, this);
         connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
 
-        getFortuneButton->setEnabled(false);
-        statusLabel->setText(tr("Opening network session."));
+        std::cout << "Opening network session." << std::endl;
         networkSession->open();
     }
 }
 
+/*-----------------------------------
+----------CONNECT TO SERVER----------
+-----------------------------------*/
+
 void Client::ConnectToServer(QWidget* connect_button)
 {
-    std::cout << "n" << std::endl;
     connect_button->setEnabled(false);
+
     blockSize = 0;
     tcpSocket->abort();
     tcpSocket->connectToHost(hostCombo->currentText(),
                              portLineEdit->text().toInt());
 }
 
-void Client::readFortune()
-{
-    QDataStream in(tcpSocket);
-    in.setVersion(QDataStream::Qt_4_0);
+/*----------------------------------------
+------------------------------------------
+-----------------MESSAGE------------------
+------------------------------------------
+----------------------------------------*/
 
-    if (blockSize == 0) {
-        if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
+
+    /*----------------------------------------------
+    ----------EMIT MESSAGE RECEIVED SIGNAL----------
+    ----------------------------------------------*/
+
+    void Client::EmitMessageReceivedSignal() {
+        emit MessageReceived();
+    }
+
+    /*------------------------------
+    ----------READ MESSAGE----------
+    ------------------------------*/
+
+    void Client::ReadMessage()
+    {
+        QDataStream in(tcpSocket);
+        in.setVersion(QDataStream::Qt_4_0);
+
+        if (blockSize == 0) {
+            if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
+                return;
+
+            in >> blockSize;
+        }
+
+        if (tcpSocket->bytesAvailable() < blockSize)
             return;
 
-        in >> blockSize;
+        QString message;
+        in >> message;
+
+        SetLastMessageReceived(message);
+        EmitMessageReceivedSignal();
     }
 
-    if (tcpSocket->bytesAvailable() < blockSize)
-        return;
+    /*-------------------------------------------
+    ----------SET LAST MESSAGE RECEIVED----------
+    -------------------------------------------*/
 
-    QString nextFortune;
-    in >> nextFortune;
-
-    if (nextFortune == currentFortune) {
-        QTimer::singleShot(0, this, SLOT(requestNewFortune()));
-        return;
+    void Client::SetLastMessageReceived(QString message) {
+        last_message_received_ = message;
     }
 
-    currentFortune = nextFortune;
-    statusLabel->setText(currentFortune);
-    std::cout << "You are now connected to your peer." << std::endl;
-    getFortuneButton->setEnabled(true);
-}
+    /*-------------------------------------------
+    ----------GET LAST MESSAGE RECEIVED----------
+    -------------------------------------------*/
+
+    QString Client::GetLastMessageReceived() {
+        return last_message_received_;
+    }
 
 void Client::displayError(QAbstractSocket::SocketError socketError)
 {
@@ -151,16 +170,6 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
                                  tr("The following error occurred: %1.")
                                  .arg(tcpSocket->errorString()));
     }
-
-    getFortuneButton->setEnabled(true);
-}
-
-void Client::enableGetFortuneButton()
-{
-    getFortuneButton->setEnabled((!networkSession || networkSession->isOpen()) &&
-                                 !hostCombo->currentText().isEmpty() &&
-                                 !portLineEdit->text().isEmpty());
-
 }
 
 void Client::sessionOpened()
@@ -180,14 +189,14 @@ void Client::sessionOpened()
 
     statusLabel->setText(tr("This examples requires that you run the "
                             "Fortune Server example as well."));
-
-    enableGetFortuneButton();
 }
 
 /*----------------------------
 ----------DISCONNECT----------
 ----------------------------*/
 
-void Client::DisconnectFromServer() {
+void Client::DisconnectFromServer(QWidget* connect_button) {
     tcpSocket->abort();
+
+    connect_button->setEnabled(true);
 }

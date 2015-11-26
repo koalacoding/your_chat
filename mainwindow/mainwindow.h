@@ -20,8 +20,11 @@ class MainWindow : public QDialog
 
 public:
     MainWindow(QWidget *parent = 0);
-
+    ~MainWindow();
 private:
+    Client* client;
+    Server* server;
+
     /*-----------------------------------------------
     -------------------------------------------------
     -----------------GENERATE GRIDS------------------
@@ -36,8 +39,8 @@ private:
 
         QGroupBox *chatGridGroupBox;
         QTextEdit *messages_text_edit;
-        QLineEdit *send_message_line_edit;
-        QPushButton *sendMessageButton;
+        QLineEdit *message_line_edit;
+        QPushButton *send_message_button_;
 
         /*------------------------------
         ----------CONNECT GRID----------
@@ -65,7 +68,23 @@ private:
     QString GetSendMessageLineEditText();
 
 private slots:
-    void AddSentMessageToMessagesTextEdit();
+    /*------------------------------------------------------------
+    ----------ADD RECEIVED MESSAGE TO MESSAGES TEXT EDIT----------
+    ------------------------------------------------------------*/
+
+    void AddReceivedMessageToMessagesTextEdit();
+
+    /*--------------------------------------------------------
+    ----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
+    --------------------------------------------------------*/
+
+    void AddSentMessageToMessagesTextEdit(QString);
+
+    /*---------------------------------------
+    ----------START MESSAGE SENDING----------
+    ---------------------------------------*/
+
+    void StartMessageSending();
 };
 
 #endif // MAINWINDOW_H

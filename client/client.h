@@ -62,13 +62,35 @@ public:
     QComboBox *hostCombo;
     QLineEdit *portLineEdit;
     QLabel *statusLabel;
-    QPushButton *connectButton;
-    QPushButton *getFortuneButton;
+
+    /*-------------------------------------------
+    ----------SET LAST MESSAGE RECEIVED----------
+    -------------------------------------------*/
+
+    void SetLastMessageReceived(QString message);
+
+    /*-------------------------------------------
+    ----------GET LAST MESSAGE RECEIVED----------
+    -------------------------------------------*/
+
+    QString GetLastMessageReceived();
+signals:
+    void MessageReceived();
 
 private slots:
-    void readFortune();
+    /*------------------------------
+    ----------READ MESSAGE----------
+    ------------------------------*/
+
+    void ReadMessage();
+
+    /*----------------------------------------------
+    ----------EMIT MESSAGE RECEIVED SIGNAL----------
+    ----------------------------------------------*/
+
+    void EmitMessageReceivedSignal();
+
     void displayError(QAbstractSocket::SocketError socketError);
-    void enableGetFortuneButton();
     void sessionOpened();
 
     /*-------------------------
@@ -81,12 +103,14 @@ private slots:
     ----------DISCONNECT----------
     ----------------------------*/
 
-    void DisconnectFromServer();
+    void DisconnectFromServer(QWidget*);
 
 private:
     QTcpSocket *tcpSocket;
     QString currentFortune;
     quint16 blockSize;
+
+    QString last_message_received_;
 
     QNetworkSession *networkSession;
 };

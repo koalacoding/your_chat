@@ -40,12 +40,15 @@
 
 #include <QtWidgets>
 #include <QtNetwork>
+#include <iostream>
 
 #include <stdlib.h>
 
 #include "server.h"
 
 Server::Server(QWidget *parent) : tcpServer(0), networkSession(0) {
+    socket = new QTcpSocket;
+
     statusLabel = new QLabel();
 
     QNetworkConfigurationManager manager;
@@ -80,8 +83,12 @@ Server::Server(QWidget *parent) : tcpServer(0), networkSession(0) {
                  << tr("You cannot kill time without injuring eternity.")
                  << tr("Computers are not intelligent. They only think they are.");
 
-        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(sendFortune()));
+        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(InitializeSocket()));
 }
+
+/*--------------------------------
+----------SESSION OPENED----------
+--------------------------------*/
 
 void Server::sessionOpened()
 {
@@ -129,6 +136,15 @@ void Server::sessionOpened()
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 
+/*-----------------------------------
+----------INITIALIZE SOCKET----------
+-----------------------------------*/
+
+void Server::InitializeSocket() {
+    std::cout << "A client just connected to you." << std::endl;
+    socket = tcpServer->nextPendingConnection();
+}
+
 void Server::sendFortune()
 {
     QByteArray block;
@@ -147,8 +163,8 @@ void Server::sendFortune()
     clientConnection->disconnectFromHost();
 }
 
-void Server::sendMessage(QString message)
-{
+void Server::SendMessage(QString message) {
+    std::cout << "Message sent" << std::endl;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
@@ -157,10 +173,5 @@ void Server::sendMessage(QString message)
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
-    QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
-    connect(clientConnection, SIGNAL(disconnected()),
-            clientConnection, SLOT(deleteLater()));
-
-    clientConnection->write(block);
-    clientConnection->disconnectFromHost();
+    socket->write(block);
 }

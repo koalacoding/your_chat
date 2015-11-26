@@ -8,8 +8,8 @@
 -----------------------------*/
 
 MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
-    Client* client = new Client;
-    Server* server = new Server;
+    client = new Client;
+    server = new Server;
 
     setWindowTitle(tr("Your Chat"));
 
@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
     mainLayout->addWidget(connectGridGroupBox);
     mainLayout->addWidget(yourInformationsGridGroupBox);
     setLayout(mainLayout);
+
+    connect(client, SIGNAL(MessageReceived()), this, SLOT(AddReceivedMessageToMessagesTextEdit()));
 }
 
 
@@ -40,19 +42,20 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
     void MainWindow::generateChatGrid() {
         chatGridGroupBox = new QGroupBox(tr("Chat"));
         QGridLayout *layout = new QGridLayout;
+        QSignalMapper* signalMapper = new QSignalMapper(this);
+        QString message;
 
         messages_text_edit = new QTextEdit();
-        send_message_line_edit = new QLineEdit();
-        sendMessageButton = new QPushButton(tr("Send"));
+        message_line_edit = new QLineEdit();
+        send_message_button_ = new QPushButton(tr("Send"));
 
         messages_text_edit->setReadOnly(true);
 
         layout->addWidget(messages_text_edit, 0, 0, 1, 3);
-        layout->addWidget(send_message_line_edit, 1, 0, 1, 3);
-        layout->addWidget(sendMessageButton, 2, 1, 1, 1);
+        layout->addWidget(message_line_edit, 1, 0, 1, 3);
+        layout->addWidget(send_message_button_, 2, 1, 1, 1);
 
-        connect(sendMessageButton, SIGNAL(clicked()), this,
-                SLOT(AddSentMessageToMessagesTextEdit()));
+        connect(send_message_button_, SIGNAL(clicked()), this, SLOT(StartMessageSending()));
 
         chatGridGroupBox->setLayout(layout);
     }
@@ -66,7 +69,8 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         connect_button = new QPushButton(tr("Connect"));
         disconnect_button = new QPushButton(tr("Disconnect"));
         QGridLayout *layout = new QGridLayout;
-        QSignalMapper* signalMapper = new QSignalMapper (this) ;
+        QSignalMapper* signalMapper = new QSignalMapper(this);
+        QSignalMapper* signalMapper2 = new QSignalMapper(this);
 
         layout->addWidget(client->hostLabel, 0, 0, 1, 1);
         layout->addWidget(client->hostCombo, 0, 1, 1, 4);
@@ -79,11 +83,13 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         connectGridGroupBox->setLayout(layout);
 
         connect(connect_button, SIGNAL(clicked()), signalMapper, SLOT(map()));
-        signalMapper->setMapping(connect_button, connect_button);
-        connect(signalMapper, SIGNAL(mapped(QWidget*)), client, SLOT(ConnectToServer(QWidget*)));
+        connect(disconnect_button, SIGNAL(clicked()), signalMapper2, SLOT(map()));
 
-        connect(disconnect_button, SIGNAL(clicked()),
-                client, SLOT(DisconnectFromServer()));
+        signalMapper->setMapping(connect_button, connect_button);
+        signalMapper2->setMapping(disconnect_button, connect_button);
+
+        connect(signalMapper, SIGNAL(mapped(QWidget*)), client, SLOT(ConnectToServer(QWidget*)));
+        connect(signalMapper2, SIGNAL(mapped(QWidget*)), client, SLOT(DisconnectFromServer(QWidget*)));
     }
 
     /*-------------------------------------------------
@@ -100,38 +106,69 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
     }
 
 
-/*---------------------------------------------
------------------------------------------------
------------------SENT MESSAGE------------------
------------------------------------------------
----------------------------------------------*/
+/*----------------------------------------
+------------------------------------------
+-----------------MESSAGE------------------
+------------------------------------------
+----------------------------------------*/
 
 
-    /*-------------------------------------------------
-    ----------GET SEND MESSAGE LINE EDIT TEXT----------
-    -------------------------------------------------*/
+    /*------------------------------------------------------------
+    ----------ADD RECEIVED MESSAGE TO MESSAGES TEXT EDIT----------
+    ------------------------------------------------------------*/
 
-    QString MainWindow::GetSendMessageLineEditText() {
-        return send_message_line_edit->text();
+    void MainWindow::AddReceivedMessageToMessagesTextEdit() {
+        QString message = client->GetLastMessageReceived();
+        std::cout << message.toStdString() << std::endl;
     }
 
+    /*---------------------------------------------
+    -----------------------------------------------
+    -----------------SEND MESSAGE------------------
+    -----------------------------------------------
+    ---------------------------------------------*/
 
-    /*--------------------------------------------------------
-    ----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
-    --------------------------------------------------------*/
 
-    void MainWindow::AddSentMessageToMessagesTextEdit() {
-        QString sent_message = GetSendMessageLineEditText();
+        /*-------------------------------------------------
+        ----------GET SEND MESSAGE LINE EDIT TEXT----------
+        -------------------------------------------------*/
 
-        /* If the message is empty, we don't send it to the peer
-           and don't add it to the messages text edit. */
-        if (sent_message == tr("")) {
-            return;
+        QString MainWindow::GetSendMessageLineEditText() {
+            return message_line_edit->text();
         }
 
-        QString formatted_message = tr("You > ") + sent_message;
+        /*--------------------------------------------------------
+        ----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
+        --------------------------------------------------------*/
 
-        messages_text_edit->append(formatted_message);
+        void MainWindow::AddSentMessageToMessagesTextEdit(QString message) {
+            /* If the message is empty, we don't send it to the peer
+               and don't add it to the messages text edit. */
+            if (message == tr("")) {
+                return;
+            }
 
-        send_message_line_edit->setText(tr(""));
-    }
+            QString formatted_message = tr("You > ") + message;
+
+            messages_text_edit->append(formatted_message);
+
+            message_line_edit->setText(tr(""));
+        }
+
+        /*---------------------------------------
+        ----------START MESSAGE SENDING----------
+        ---------------------------------------*/
+
+        void MainWindow::StartMessageSending() {
+            QString message = GetSendMessageLineEditText();
+
+            server->SendMessage(message);
+
+            AddSentMessageToMessagesTextEdit(message);
+        }
+
+
+MainWindow::~MainWindow() {
+    delete client;
+    delete server;
+}

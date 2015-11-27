@@ -13,37 +13,23 @@ class QNetworkSession;
 class Server : public QWidget {
     Q_OBJECT
 
-    public:
-        Server(QWidget *parent = 0);
+  public:
+    Server(QWidget *parent = 0);
+    MessageHandler* message_handler_;
+    QLabel *statusLabel;
 
-            MessageHandler* message_handler_;
+    bool IsConnectedToClient();
+    ~Server();
 
-        QLabel *statusLabel;
+  private slots:
+    void sessionOpened();
+    void InitializeSocket();
 
-        /*----------------------------------------
-        ----------IS CONNECTED TO CLIENT----------
-        ----------------------------------------*/
+  private:
+    QTcpServer *tcpServer;
+    QNetworkSession *networkSession;
 
-        bool IsConnectedToClient();
-
-    private slots:
-        /*--------------------------------
-        ----------SESSION OPENED----------
-        --------------------------------*/
-
-        void sessionOpened();
-
-        /*-----------------------------------
-        ----------INITIALIZE SOCKET----------
-        -----------------------------------*/
-
-        void InitializeSocket();
-
-    private:
-        QTcpServer *tcpServer;
-        QNetworkSession *networkSession;
-
-        bool is_connected_to_client_;
+    bool is_connected_to_client_;
 };
 
 #endif

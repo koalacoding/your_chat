@@ -108,3 +108,11 @@ void Server::InitializeSocket() {
 bool Server::IsConnectedToClient() {
   return is_connected_to_client_;
 }
+
+/*----------------------------
+----------DESTRUCTOR----------
+----------------------------*/
+
+Server::~Server() {
+    delete message_handler_;
+}

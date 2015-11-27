@@ -25,19 +25,11 @@ class Client : public QWidget {
     QComboBox *hostCombo;
     QLineEdit *portLineEdit;
 
+    ~Client();
   private slots:
     void sessionOpened();
 
-    /*-------------------------
-    ----------CONNECT----------
-    -------------------------*/
-
     void ConnectToServer(QWidget*);
-
-    /*----------------------------
-    ----------DISCONNECT----------
-    ----------------------------*/
-
     void DisconnectFromServer(QWidget*);
 
   private:

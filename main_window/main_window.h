@@ -19,7 +19,9 @@ class MainWindow : public QDialog
 
 public:
     MainWindow(QWidget *parent = 0);
+
     ~MainWindow();
+
 private:
     Client* client;
     Server* server;

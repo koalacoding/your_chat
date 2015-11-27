@@ -114,3 +114,11 @@ void Client::DisconnectFromServer(QWidget* connect_button) {
 
     connect_button->setEnabled(true);
 }
+
+/*----------------------------
+----------DESTRUCTOR----------
+----------------------------*/
+
+Client::~Client() {
+    delete message_handler_;
+}

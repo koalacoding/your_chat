@@ -66,8 +66,6 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         connect_button = new QPushButton(tr("Connect"));
         disconnect_button = new QPushButton(tr("Disconnect"));
         QGridLayout *layout = new QGridLayout;
-        QSignalMapper* signalMapper = new QSignalMapper(this);
-        QSignalMapper* signalMapper2 = new QSignalMapper(this);
 
         layout->addWidget(client->hostLabel, 0, 0, 1, 1);
         layout->addWidget(client->hostCombo, 0, 1, 1, 4);
@@ -78,14 +76,10 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
         connectGridGroupBox->setLayout(layout);
 
-        connect(connect_button, SIGNAL(clicked()), signalMapper, SLOT(map()));
-        connect(disconnect_button, SIGNAL(clicked()), signalMapper2, SLOT(map()));
-
-        signalMapper->setMapping(connect_button, connect_button);
-        signalMapper2->setMapping(disconnect_button, connect_button);
-
-        connect(signalMapper, SIGNAL(mapped(QWidget*)), client, SLOT(ConnectToServer(QWidget*)));
-        connect(signalMapper2, SIGNAL(mapped(QWidget*)), client, SLOT(DisconnectFromServer(QWidget*)));
+        connect(connect_button, SIGNAL(clicked()), client, SLOT(ConnectToServer()));
+        connect(client, SIGNAL(ConnectedToServer()), this, SLOT(DisableConnectButton()));
+        connect(disconnect_button, SIGNAL(clicked()), client, SLOT(DisconnectFromServer()));
+        connect(client, SIGNAL(DisconnectedFromServer()), this, SLOT(EnableConnectButton()));
     }
 
     /*-------------------------------------------------
@@ -100,6 +94,30 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
         yourInformationsGridGroupBox->setLayout(layout);
     }
+
+
+/*----------------------------------------------------------------
+------------------------------------------------------------------
+-----------------ENABLE / DISABLE CONNECT BUTTON------------------
+------------------------------------------------------------------
+----------------------------------------------------------------*/
+
+
+  /*----------------------------------------
+  ----------DISABLE CONNECT BUTTON----------
+  ----------------------------------------*/
+
+  void MainWindow::DisableConnectButton() {
+    connect_button->setEnabled(false);
+  }
+
+  /*---------------------------------------
+  ----------ENABLE CONNECT BUTTON----------
+  ---------------------------------------*/
+
+  void MainWindow::EnableConnectButton() {
+    connect_button->setEnabled(true);
+  }
 
 
 /*----------------------------------------

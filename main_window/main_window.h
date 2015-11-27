@@ -23,69 +23,28 @@ public:
     ~MainWindow();
 
 private:
-    Client* client;
-    Server* server;
+  Client* client;
+  Server* server;
+  QGroupBox *chatGridGroupBox;
+  QTextEdit *messages_text_edit;
+  QLineEdit *message_line_edit;
+  QPushButton *send_message_button_;
+  QGroupBox *connectGridGroupBox;
+  QPushButton *connect_button;
+  QPushButton *disconnect_button;
+  QGroupBox *yourInformationsGridGroupBox;
+  QString GetSendMessageLineEditText();
 
-    /*-----------------------------------------------
-    -------------------------------------------------
-    -----------------GENERATE GRIDS------------------
-    -------------------------------------------------
-    -----------------------------------------------*/
-
-        /*---------------------------
-        ----------CHAT GRID----------
-        ---------------------------*/
-
-        void generateChatGrid();
-
-        QGroupBox *chatGridGroupBox;
-        QTextEdit *messages_text_edit;
-        QLineEdit *message_line_edit;
-        QPushButton *send_message_button_;
-
-        /*------------------------------
-        ----------CONNECT GRID----------
-        ------------------------------*/
-
-        void generateConnectGrid(Client* client);
-
-        QGroupBox *connectGridGroupBox;
-        QPushButton *connect_button;
-        QPushButton *disconnect_button;
-
-        /*----------------------------------------
-        ----------YOUR INFORMATIONS GRID----------
-        ----------------------------------------*/
-
-        void generateYourInformationsGrid(Server* server);
-
-        QGroupBox *yourInformationsGridGroupBox;
-
-
-    /*-------------------------------------------------
-    ----------GET SEND MESSAGE LINE EDIT TEXT----------
-    -------------------------------------------------*/
-
-    QString GetSendMessageLineEditText();
+  void generateChatGrid();
+  void generateConnectGrid(Client* client);
+  void generateYourInformationsGrid(Server* server);
 
 private slots:
-    /*------------------------------------------------------------
-    ----------ADD RECEIVED MESSAGE TO MESSAGES TEXT EDIT----------
-    ------------------------------------------------------------*/
-
-    void AddReceivedMessageToMessagesTextEdit();
-
-    /*--------------------------------------------------------
-    ----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
-    --------------------------------------------------------*/
-
-    void AddSentMessageToMessagesTextEdit(QString);
-
-    /*---------------------------------------
-    ----------START MESSAGE SENDING----------
-    ---------------------------------------*/
-
-    void StartMessageSending();
+  void DisableConnectButton();
+  void EnableConnectButton();
+  void AddReceivedMessageToMessagesTextEdit();
+  void AddSentMessageToMessagesTextEdit(QString);
+  void StartMessageSending();
 };
 
 #endif // MAINWINDOW_H

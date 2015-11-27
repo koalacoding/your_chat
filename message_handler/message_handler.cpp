@@ -8,6 +8,33 @@ MessageHandler::MessageHandler(QWidget *parent) {
               SLOT(displayError(QAbstractSocket::SocketError)));
 }
 
+/*-------------------------------
+----------DISPLAY ERROR----------
+-------------------------------*/
+
+void MessageHandler::displayError(QAbstractSocket::SocketError socketError) {
+  switch (socketError) {
+    case QAbstractSocket::RemoteHostClosedError:
+      break;
+    case QAbstractSocket::HostNotFoundError:
+      QMessageBox::information(this, tr("Error"),
+                               tr("The host was not found. Please check the "
+                                  "host name and port settings."));
+      break;
+    case QAbstractSocket::ConnectionRefusedError:
+      QMessageBox::information(this, tr("Error"),
+                               tr("The connection was refused by the peer. "
+                                  "Make sure the server is running, "
+                                  "and check that the host name and port "
+                                  "settings are correct."));
+      break;
+    default:
+      QMessageBox::information(this, tr("Error"),
+                               tr("The following error occurred: %1.")
+                               .arg(socket_->errorString()));
+  }
+}
+
 
 /*----------------------------------------
 ------------------------------------------
@@ -82,31 +109,3 @@ MessageHandler::MessageHandler(QWidget *parent) {
 
     socket_->write(block);
   }
-
-
-/*-------------------------------
-----------DISPLAY ERROR----------
--------------------------------*/
-
-void MessageHandler::displayError(QAbstractSocket::SocketError socketError) {
-  switch (socketError) {
-  case QAbstractSocket::RemoteHostClosedError:
-      break;
-  case QAbstractSocket::HostNotFoundError:
-      QMessageBox::information(this, tr("Error"),
-                               tr("The host was not found. Please check the "
-                                  "host name and port settings."));
-      break;
-  case QAbstractSocket::ConnectionRefusedError:
-      QMessageBox::information(this, tr("Error"),
-                               tr("The connection was refused by the peer. "
-                                  "Make sure the server is running, "
-                                  "and check that the host name and port "
-                                  "settings are correct."));
-      break;
-  default:
-      QMessageBox::information(this, tr("Error"),
-                               tr("The following error occurred: %1.")
-                               .arg(socket_->errorString()));
-  }
-}

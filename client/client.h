@@ -26,11 +26,17 @@ class Client : public QWidget {
     QLineEdit *portLineEdit;
 
     ~Client();
-  private slots:
-    void sessionOpened();
 
-    void ConnectToServer(QWidget*);
-    void DisconnectFromServer(QWidget*);
+  signals:
+    void ConnectedToServer();
+    void DisconnectedFromServer();
+
+  private slots:
+    void HandleConnected();
+    void HandleDisconnected();
+    void ConnectToServer();
+    void DisconnectFromServer();
+    void sessionOpened();
 
   private:
     QNetworkSession *networkSession;

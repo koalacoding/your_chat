@@ -78,16 +78,40 @@ Client::Client(QWidget *parent) : networkSession(0) {
 ----------CONNECT TO SERVER----------
 -----------------------------------*/
 
-void Client::ConnectToServer(QWidget* connect_button)
+void Client::ConnectToServer()
 {
-    connect_button->setEnabled(false);
-
     message_handler_->socket_->abort(); // In case there was already a connection.
     message_handler_->socket_->connectToHost(hostCombo->currentText(),
-                                             portLineEdit->text().toInt());
+                                           portLineEdit->text().toInt());
 
-    connect(message_handler_->socket_, SIGNAL(readyRead()), message_handler_, SLOT(ReadMessage()));
+    connect(message_handler_->socket_, SIGNAL(connected()), this, SLOT(HandleConnected()));
+    connect(message_handler_->socket_, SIGNAL(disconnected()), this, SLOT(HandleDisconnected()));
 }
+
+
+/*--------------------------------------------------------------------
+----------------------------------------------------------------------
+-----------------CONNECTED AND DISCONNECTED HANDLERS------------------
+----------------------------------------------------------------------
+--------------------------------------------------------------------*/
+
+
+  /*----------------------------------
+  ----------HANDLE CONNECTED----------
+  ----------------------------------*/
+
+  void Client::HandleConnected() {
+    ConnectedToServer(); // Emits this signal
+    connect(message_handler_->socket_, SIGNAL(readyRead()), message_handler_, SLOT(ReadMessage()));
+  }
+
+  /*-------------------------------------
+  ----------HANDLE DISCONNECTED----------
+  -------------------------------------*/
+
+  void Client::HandleDisconnected() {
+    DisconnectedFromServer(); // Emits this signal
+  }
 
 void Client::sessionOpened()
 {
@@ -109,10 +133,8 @@ void Client::sessionOpened()
 ----------DISCONNECT----------
 ----------------------------*/
 
-void Client::DisconnectFromServer(QWidget* connect_button) {
+void Client::DisconnectFromServer() {
     message_handler_->socket_->abort();
-
-    connect_button->setEnabled(true);
 }
 
 /*----------------------------

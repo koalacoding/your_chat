@@ -1,7 +1,7 @@
 #include <QtWidgets>
 #include <iostream>
 
-#include "mainwindow.h"
+#include "main_window.h"
 
 /*-----------------------------
 ----------CONSTRUCTOR----------

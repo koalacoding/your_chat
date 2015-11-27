@@ -3,3 +3,4 @@ Online chat coded in C++. Using Qt Creator to build with the .pro file.
 
 ## To do
 * Don't allow Server to send empty messages
+* Don't disable the connect button if the client cannot connect to the host.

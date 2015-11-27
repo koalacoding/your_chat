@@ -2,8 +2,8 @@
 #define SERVER_H
 
 #include <QDialog>
+#include <message_handler/message_handler.h>
 
-class QTcpSocket;
 class QLabel;
 class QTcpServer;
 class QNetworkSession;
@@ -14,9 +14,16 @@ class Server : public QWidget {
     public:
         Server(QWidget *parent = 0);
 
+            MessageHandler* message_handler_;
+
         QLabel *statusLabel;
 
-        void SendMessage(QString);
+        /*----------------------------------------
+        ----------IS CONNECTED TO CLIENT----------
+        ----------------------------------------*/
+
+        bool IsConnectedToClient();
+
     private slots:
         /*--------------------------------
         ----------SESSION OPENED----------
@@ -30,13 +37,11 @@ class Server : public QWidget {
 
         void InitializeSocket();
 
-        void sendFortune();
-
     private:
-        QTcpSocket *socket;
         QTcpServer *tcpServer;
-        QStringList fortunes;
         QNetworkSession *networkSession;
+
+        bool is_connected_to_client_;
 };
 
 #endif

@@ -13,10 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-           mainwindow/mainwindow.cpp \
+           main_window/main_window.cpp \
            client/client.cpp \
            server/server.cpp \
+           message_handler/message_handler.cpp
 
-HEADERS  += mainwindow/mainwindow.h \
+
+HEADERS  += main_window/main_window.h \
             client/client.h \
             server/server.h \
+            message_handler/message_handler.h

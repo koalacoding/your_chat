@@ -1,12 +1,15 @@
-#include <iostream>
-#include <QtWidgets>
-#include <QtNetwork>
-
+#include <QMessageBox>
 #include "client.h"
 
-Client::Client(QWidget *parent)
-:   QDialog(parent), networkSession(0)
-{
+/*-----------------------------
+----------CONSTRUCTOR----------
+-----------------------------*/
+
+Client::Client(QWidget *parent) : networkSession(0) {
+    QNetworkConfigurationManager manager;
+
+    message_handler_ = new MessageHandler();
+
     hostLabel = new QLabel(tr("P&eer IP:"));
     portLabel = new QLabel(tr("&Port:"));
 
@@ -16,24 +19,30 @@ Client::Client(QWidget *parent)
     QString name = QHostInfo::localHostName();
 
     if (!name.isEmpty()) {
-        hostCombo->addItem(name);
-        QString domain = QHostInfo::localDomainName();
-        if (!domain.isEmpty())
-            hostCombo->addItem(name + QChar('.') + domain);
+      QString domain = QHostInfo::localDomainName();
+
+      hostCombo->addItem(name);
+
+      if (!domain.isEmpty()) hostCombo->addItem(name + QChar('.') + domain);
     }
-    if (name != QString("localhost"))
-        hostCombo->addItem(QString("localhost"));
-    // find out IP addresses of this machine
+
+    if (name != QString("localhost")) hostCombo->addItem(QString("localhost"));
+
+    // Find out IP addresses of this machine.
     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-    // add non-localhost addresses
+
+    // Add non-localhost addresses
     for (int i = 0; i < ipAddressesList.size(); ++i) {
-        if (!ipAddressesList.at(i).isLoopback())
-            hostCombo->addItem(ipAddressesList.at(i).toString());
+      if (!ipAddressesList.at(i).isLoopback()) {
+        hostCombo->addItem(ipAddressesList.at(i).toString());
+      }
     }
+
     // add localhost addresses
     for (int i = 0; i < ipAddressesList.size(); ++i) {
-        if (ipAddressesList.at(i).isLoopback())
+        if (ipAddressesList.at(i).isLoopback()) {
             hostCombo->addItem(ipAddressesList.at(i).toString());
+        }
     }
 
     portLineEdit = new QLineEdit;
@@ -42,19 +51,9 @@ Client::Client(QWidget *parent)
     hostLabel->setBuddy(hostCombo);
     portLabel->setBuddy(portLineEdit);
 
-    statusLabel = new QLabel(tr("This examples requires that you run the "
-                                "Fortune Server example as well."));
-
-    tcpSocket = new QTcpSocket(this);
-
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this,
-            SLOT(displayError(QAbstractSocket::SocketError)));
-
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(ReadMessage()));
-
     portLineEdit->setFocus();
 
-    QNetworkConfigurationManager manager;
+
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
         // Get saved network configuration
         QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
@@ -85,93 +84,11 @@ void Client::ConnectToServer(QWidget* connect_button)
 {
     connect_button->setEnabled(false);
 
-    blockSize = 0;
-    tcpSocket->abort();
-    tcpSocket->connectToHost(hostCombo->currentText(),
-                             portLineEdit->text().toInt());
-}
+    message_handler_->socket_->abort(); // In case there was already a connection.
+    message_handler_->socket_->connectToHost(hostCombo->currentText(),
+                                             portLineEdit->text().toInt());
 
-/*----------------------------------------
-------------------------------------------
------------------MESSAGE------------------
-------------------------------------------
-----------------------------------------*/
-
-
-    /*----------------------------------------------
-    ----------EMIT MESSAGE RECEIVED SIGNAL----------
-    ----------------------------------------------*/
-
-    void Client::EmitMessageReceivedSignal() {
-        emit MessageReceived();
-    }
-
-    /*------------------------------
-    ----------READ MESSAGE----------
-    ------------------------------*/
-
-    void Client::ReadMessage()
-    {
-        QDataStream in(tcpSocket);
-        in.setVersion(QDataStream::Qt_4_0);
-
-        if (blockSize == 0) {
-            if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
-                return;
-
-            in >> blockSize;
-        }
-
-        if (tcpSocket->bytesAvailable() < blockSize)
-            return;
-
-        QString message;
-        in >> message;
-
-        blockSize = 0;
-
-        SetLastMessageReceived(message);
-        EmitMessageReceivedSignal();
-    }
-
-    /*-------------------------------------------
-    ----------SET LAST MESSAGE RECEIVED----------
-    -------------------------------------------*/
-
-    void Client::SetLastMessageReceived(QString message) {
-        last_message_received_ = message;
-    }
-
-    /*-------------------------------------------
-    ----------GET LAST MESSAGE RECEIVED----------
-    -------------------------------------------*/
-
-    QString Client::GetLastMessageReceived() {
-        return last_message_received_;
-    }
-
-void Client::displayError(QAbstractSocket::SocketError socketError)
-{
-    switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-        break;
-    case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(this, tr("Fortune Client"),
-                                 tr("The host was not found. Please check the "
-                                    "host name and port settings."));
-        break;
-    case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(this, tr("Fortune Client"),
-                                 tr("The connection was refused by the peer. "
-                                    "Make sure the fortune server is running, "
-                                    "and check that the host name and port "
-                                    "settings are correct."));
-        break;
-    default:
-        QMessageBox::information(this, tr("Fortune Client"),
-                                 tr("The following error occurred: %1.")
-                                 .arg(tcpSocket->errorString()));
-    }
+    connect(message_handler_->socket_, SIGNAL(readyRead()), message_handler_, SLOT(ReadMessage()));
 }
 
 void Client::sessionOpened()
@@ -188,9 +105,6 @@ void Client::sessionOpened()
     settings.beginGroup(QLatin1String("QtNetwork"));
     settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
     settings.endGroup();
-
-    statusLabel->setText(tr("This examples requires that you run the "
-                            "Fortune Server example as well."));
 }
 
 /*----------------------------
@@ -198,7 +112,7 @@ void Client::sessionOpened()
 ----------------------------*/
 
 void Client::DisconnectFromServer(QWidget* connect_button) {
-    tcpSocket->abort();
+    message_handler_->socket_->abort();
 
     connect_button->setEnabled(true);
 }

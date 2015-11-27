@@ -1,4 +1,3 @@
-#include <QMessageBox>
 #include "client.h"
 
 /*-----------------------------
@@ -71,7 +70,6 @@ Client::Client(QWidget *parent) : networkSession(0) {
         networkSession = new QNetworkSession(config, this);
         connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
 
-        std::cout << "Opening network session." << std::endl;
         networkSession->open();
     }
 }

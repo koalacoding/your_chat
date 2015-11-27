@@ -1,8 +1,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <iostream>
 #include <QtWidgets>
+#include <QMessageBox>
 #include <QtNetwork>
 #include <message_handler/message_handler.h>
 

@@ -1,6 +1,3 @@
-#include <QtWidgets>
-#include <iostream>
-
 #include "main_window.h"
 
 /*-----------------------------
@@ -43,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
     void MainWindow::generateChatGrid() {
         chatGridGroupBox = new QGroupBox(tr("Chat"));
         QGridLayout *layout = new QGridLayout;
-        QSignalMapper* signalMapper = new QSignalMapper(this);
         QString message;
 
         messages_text_edit = new QTextEdit();

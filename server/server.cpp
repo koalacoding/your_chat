@@ -1,8 +1,3 @@
-#include <QtWidgets>
-#include <QtNetwork>
-#include <iostream>
-#include <stdlib.h>
-
 #include "server.h"
 
 /*-----------------------------
@@ -101,7 +96,6 @@ void Server::sessionOpened()
 -----------------------------------*/
 
 void Server::InitializeSocket() {
-  std::cout << "A client just connected to you." << std::endl;
   message_handler_->socket_ = tcpServer->nextPendingConnection();
   connect(message_handler_->socket_, SIGNAL(readyRead()), message_handler_, SLOT(ReadMessage()));
   is_connected_to_client_ = true;

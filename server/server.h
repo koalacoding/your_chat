@@ -1,7 +1,9 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <QtWidgets>
 #include <QDialog>
+#include <QtNetwork>
 #include <message_handler/message_handler.h>
 
 class QLabel;

@@ -2,6 +2,7 @@
 #define MESSAGEHANDLER_H
 
 #include <QWidget>
+#include <QMessageBox>
 #include <QtNetwork>
 
 class QTcpSocket;

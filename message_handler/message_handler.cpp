@@ -1,5 +1,3 @@
-#include <QMessageBox>
-#include <iostream>
 #include "message_handler.h"
 
 MessageHandler::MessageHandler(QWidget *parent) {
@@ -9,6 +7,7 @@ MessageHandler::MessageHandler(QWidget *parent) {
   connect(socket_, SIGNAL(error(QAbstractSocket::SocketError)), this,
               SLOT(displayError(QAbstractSocket::SocketError)));
 }
+
 
 /*----------------------------------------
 ------------------------------------------
@@ -22,7 +21,6 @@ MessageHandler::MessageHandler(QWidget *parent) {
   ----------------------------------------------*/
 
   void MessageHandler::EmitMessageReceivedSignal() {
-    std::cout << "message received signal emitted" << std::endl;
       emit MessageReceived();
   }
 
@@ -47,7 +45,6 @@ MessageHandler::MessageHandler(QWidget *parent) {
   ------------------------------*/
 
   void MessageHandler::ReadMessage() {
-    std::cout << "New message arrived" << std::endl;
     QDataStream in(socket_);
     in.setVersion(QDataStream::Qt_4_0);
 
@@ -64,8 +61,6 @@ MessageHandler::MessageHandler(QWidget *parent) {
     QString message;
     in >> message;
 
-    std::cout << "Message : " << message.toStdString() << std::endl;
-
     block_size_ = 0;
 
     SetLastMessageReceived(message);
@@ -77,8 +72,6 @@ MessageHandler::MessageHandler(QWidget *parent) {
   ------------------------------*/
 
   void MessageHandler::SendMessage(QString message) {
-    std::cout << "In SendMessage() : message sent : " << message.toStdString() << std::endl;
-
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
@@ -87,10 +80,7 @@ MessageHandler::MessageHandler(QWidget *parent) {
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
-    std::cout << "block size : " << block.size() << std::endl;
-
     socket_->write(block);
-    socket_->flush();
   }
 
 
@@ -103,19 +93,19 @@ void MessageHandler::displayError(QAbstractSocket::SocketError socketError) {
   case QAbstractSocket::RemoteHostClosedError:
       break;
   case QAbstractSocket::HostNotFoundError:
-      QMessageBox::information(this, tr("Fortune Client"),
+      QMessageBox::information(this, tr("Error"),
                                tr("The host was not found. Please check the "
                                   "host name and port settings."));
       break;
   case QAbstractSocket::ConnectionRefusedError:
-      QMessageBox::information(this, tr("Fortune Client"),
+      QMessageBox::information(this, tr("Error"),
                                tr("The connection was refused by the peer. "
-                                  "Make sure the fortune server is running, "
+                                  "Make sure the server is running, "
                                   "and check that the host name and port "
                                   "settings are correct."));
       break;
   default:
-      QMessageBox::information(this, tr("Fortune Client"),
+      QMessageBox::information(this, tr("Error"),
                                tr("The following error occurred: %1.")
                                .arg(socket_->errorString()));
   }

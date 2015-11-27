@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QtWidgets>
 #include <QDialog>
-
 #include "server/server.h"
 #include "client/client.h"
 
@@ -10,7 +10,6 @@ class QGroupBox;
 class QTextEdit;
 class QLineEdit;
 class QPushButton;
-
 class Server;
 class Client;
 

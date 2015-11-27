@@ -18,7 +18,6 @@ class Server : public QWidget {
     MessageHandler* message_handler_;
     QLabel *statusLabel;
 
-    bool IsConnectedToClient();
     ~Server();
 
   private slots:
@@ -28,8 +27,6 @@ class Server : public QWidget {
   private:
     QTcpServer *tcpServer;
     QNetworkSession *networkSession;
-
-    bool is_connected_to_client_;
 };
 
 #endif

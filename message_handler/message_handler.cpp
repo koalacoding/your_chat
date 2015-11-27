@@ -101,6 +101,7 @@ void MessageHandler::displayError(QAbstractSocket::SocketError socketError) {
   void MessageHandler::SendMessage(QString message) {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
+
     out.setVersion(QDataStream::Qt_4_0);
     out << (quint16)0;
     out << message;

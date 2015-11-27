@@ -127,69 +127,77 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 ----------------------------------------*/
 
 
-    /*------------------------------------------------------------
-    ----------ADD RECEIVED MESSAGE TO MESSAGES TEXT EDIT----------
-    ------------------------------------------------------------*/
+  /*------------------------------------------------------------
+  ----------ADD RECEIVED MESSAGE TO MESSAGES TEXT EDIT----------
+  ------------------------------------------------------------*/
 
-    void MainWindow::AddReceivedMessageToMessagesTextEdit() {
-        QString message;
-        QString formatted_message;
+  void MainWindow::AddReceivedMessageToMessagesTextEdit() {
+      QString message;
+      QString formatted_message;
 
-        if (server->IsConnectedToClient()) { // If the user's server is connected to a client
-          // Then it is his server that read the message, not his client
-           message = server->message_handler_->GetLastMessageReceived();
-        } else message = client->message_handler_->GetLastMessageReceived();
+      // If the server's socket is connected
+      if (server->message_handler_->socket_->state() == QAbstractSocket::ConnectedState) {
+        // Then we grab the message from the server
+        message = server->message_handler_->GetLastMessageReceived();
+      } else message = client->message_handler_->GetLastMessageReceived();
 
-        formatted_message = tr("Peer > ") + message;
-        messages_text_edit->append(formatted_message);
+      formatted_message = tr("Peer > ") + message;
+      messages_text_edit->append(formatted_message);
+  }
+
+
+  /*---------------------------------------------
+  -----------------------------------------------
+  -----------------SEND MESSAGE------------------
+  -----------------------------------------------
+  ---------------------------------------------*/
+
+
+    /*-------------------------------------------------
+    ----------GET SEND MESSAGE LINE EDIT TEXT----------
+    -------------------------------------------------*/
+
+    QString MainWindow::GetSendMessageLineEditText() {
+        return message_line_edit->text();
     }
 
+    /*--------------------------------------------------------
+    ----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
+    --------------------------------------------------------*/
 
-    /*---------------------------------------------
-    -----------------------------------------------
-    -----------------SEND MESSAGE------------------
-    -----------------------------------------------
-    ---------------------------------------------*/
+    void MainWindow::AddSentMessageToMessagesTextEdit(QString message) {
+        QString formatted_message = tr("You > ") + message;
 
+        messages_text_edit->append(formatted_message);
 
-        /*-------------------------------------------------
-        ----------GET SEND MESSAGE LINE EDIT TEXT----------
-        -------------------------------------------------*/
+        message_line_edit->setText(tr(""));
+    }
 
-        QString MainWindow::GetSendMessageLineEditText() {
-            return message_line_edit->text();
-        }
+    /*---------------------------------------
+    ----------START MESSAGE SENDING----------
+    ---------------------------------------*/
 
-        /*--------------------------------------------------------
-        ----------ADD SENT MESSAGE TO MESSAGES TEXT EDIT----------
-        --------------------------------------------------------*/
+    void MainWindow::StartMessageSending() {
+      QString message = GetSendMessageLineEditText();
+      bool message_sent = false;
 
-        void MainWindow::AddSentMessageToMessagesTextEdit(QString message) {
-            QString formatted_message = tr("You > ") + message;
+      if (message == tr("")) return; // If the message is empty, we don't send it.
 
-            messages_text_edit->append(formatted_message);
+      // If the server's socket is connected
+      if (server->message_handler_->socket_->state() == QAbstractSocket::ConnectedState) {
+        // Then it is the server that sends the message, not the client
+        server->message_handler_->SendMessage(message);
+        message_sent = true;
+      }
+      // Otherwise, if the client's socket is connected
+      else if (client->message_handler_->socket_->state() == QAbstractSocket::ConnectedState) {
+        // Then it is the client that sends the message
+        client->message_handler_->SendMessage(message);
+        message_sent = true;
+      }
 
-            message_line_edit->setText(tr(""));
-        }
-
-        /*---------------------------------------
-        ----------START MESSAGE SENDING----------
-        ---------------------------------------*/
-
-        void MainWindow::StartMessageSending() {
-            QString message = GetSendMessageLineEditText();
-
-            if (message == tr("")) return; // If the message is empty, we don't send it.
-
-            if (server->IsConnectedToClient()) { // If the user's server is connected to a client
-              // Then it is his server that sends the message, not his client
-              server->message_handler_->SendMessage(message);
-            } else {
-              client->message_handler_->SendMessage(message);
-            }
-
-            AddSentMessageToMessagesTextEdit(message);
-        }
+      if (message_sent) AddSentMessageToMessagesTextEdit(message);
+    }
 
 
 MainWindow::~MainWindow() {

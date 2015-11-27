@@ -4,7 +4,7 @@
 ----------CONSTRUCTOR----------
 -----------------------------*/
 
-Server::Server(QWidget *parent) : tcpServer(0), networkSession(0), is_connected_to_client_(false) {
+Server::Server(QWidget *parent) : tcpServer(0), networkSession(0) {
   message_handler_ = new MessageHandler();
 
   statusLabel = new QLabel();
@@ -98,15 +98,6 @@ void Server::sessionOpened()
 void Server::InitializeSocket() {
   message_handler_->socket_ = tcpServer->nextPendingConnection();
   connect(message_handler_->socket_, SIGNAL(readyRead()), message_handler_, SLOT(ReadMessage()));
-  is_connected_to_client_ = true;
-}
-
-/*----------------------------------------
-----------IS CONNECTED TO CLIENT----------
-----------------------------------------*/
-
-bool Server::IsConnectedToClient() {
-  return is_connected_to_client_;
 }
 
 /*----------------------------

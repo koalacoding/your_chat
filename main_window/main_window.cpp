@@ -147,12 +147,6 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
         --------------------------------------------------------*/
 
         void MainWindow::AddSentMessageToMessagesTextEdit(QString message) {
-            /* If the message is empty, we don't send it to the peer
-               and don't add it to the messages text edit. */
-            if (message == tr("")) {
-                return;
-            }
-
             QString formatted_message = tr("You > ") + message;
 
             messages_text_edit->append(formatted_message);
@@ -166,6 +160,8 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
         void MainWindow::StartMessageSending() {
             QString message = GetSendMessageLineEditText();
+
+            if (message == tr("")) return; // If the message is empty, we don't send it.
 
             if (server->IsConnectedToClient()) { // If the user's server is connected to a client
               // Then it is his server that sends the message, not his client

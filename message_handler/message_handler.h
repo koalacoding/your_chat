@@ -15,7 +15,7 @@ class MessageHandler : public QWidget {
 
     QString GetLastMessageReceived();
     void SetLastMessageReceived(QString);
-    void SendMessage(QString);
+    void SendMessageToPeer(QString);
 
     QTcpSocket* socket_;
     quint16 block_size_;

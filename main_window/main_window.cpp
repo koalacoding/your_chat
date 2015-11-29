@@ -186,13 +186,13 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
       // If the server's socket is connected
       if (server->message_handler_->socket_->state() == QAbstractSocket::ConnectedState) {
         // Then it is the server that sends the message, not the client
-        server->message_handler_->SendMessage(message);
+        server->message_handler_->SendMessageToPeer(message);
         message_sent = true;
       }
       // Otherwise, if the client's socket is connected
       else if (client->message_handler_->socket_->state() == QAbstractSocket::ConnectedState) {
         // Then it is the client that sends the message
-        client->message_handler_->SendMessage(message);
+        client->message_handler_->SendMessageToPeer(message);
         message_sent = true;
       }
 

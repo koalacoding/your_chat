@@ -98,7 +98,7 @@ void MessageHandler::displayError(QAbstractSocket::SocketError socketError) {
   ----------SEND MESSAGE----------
   ------------------------------*/
 
-  void MessageHandler::SendMessage(QString message) {
+  void MessageHandler::SendMessageToPeer(QString message) {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
 

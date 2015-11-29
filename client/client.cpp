@@ -80,38 +80,25 @@ Client::Client(QWidget *parent) : networkSession(0) {
 
 void Client::ConnectToServer()
 {
-    message_handler_->socket_->abort(); // In case there was already a connection.
-    message_handler_->socket_->connectToHost(hostCombo->currentText(),
-                                           portLineEdit->text().toInt());
+  QString host_address = hostCombo->currentText();
+  quint16 port = portLineEdit->text().toInt();
 
-    connect(message_handler_->socket_, SIGNAL(connected()), this, SLOT(HandleConnected()));
-    connect(message_handler_->socket_, SIGNAL(disconnected()), this, SLOT(HandleDisconnected()));
+  message_handler_->ConnectSocketToHost(host_address, port);
+
+  connect(message_handler_->socket_, SIGNAL(disconnected()), this, SLOT(HandleDisconnected()));
 }
 
+/*-------------------------------------
+----------HANDLE DISCONNECTED----------
+-------------------------------------*/
 
-/*--------------------------------------------------------------------
-----------------------------------------------------------------------
------------------CONNECTED AND DISCONNECTED HANDLERS------------------
-----------------------------------------------------------------------
---------------------------------------------------------------------*/
+void Client::HandleDisconnected() {
+  DisconnectedFromServer(); // Emits this signal
+}
 
-
-  /*----------------------------------
-  ----------HANDLE CONNECTED----------
-  ----------------------------------*/
-
-  void Client::HandleConnected() {
-    ConnectedToServer(); // Emits this signal
-    connect(message_handler_->socket_, SIGNAL(readyRead()), message_handler_, SLOT(ReadMessage()));
-  }
-
-  /*-------------------------------------
-  ----------HANDLE DISCONNECTED----------
-  -------------------------------------*/
-
-  void Client::HandleDisconnected() {
-    DisconnectedFromServer(); // Emits this signal
-  }
+/*--------------------------------
+----------SESSION OPENED----------
+--------------------------------*/
 
 void Client::sessionOpened()
 {

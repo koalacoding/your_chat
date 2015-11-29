@@ -42,6 +42,43 @@ void MessageHandler::DisplayError(QAbstractSocket::SocketError socket_error) {
 }
 
 
+/*------------------------------------------------------
+--------------------------------------------------------
+-----------------SOCKET INITIALIZATION------------------
+--------------------------------------------------------
+------------------------------------------------------*/
+
+
+  /*----------------------------------------
+  ----------CONNECT SOCKET TO HOST----------
+  ----------------------------------------*/
+
+  void MessageHandler::ConnectSocketToHost(QString host_address, quint16 port) {
+    socket_->abort(); // In case there was already a connection
+    socket_->connectToHost(host_address, port);
+
+    connect(socket_, SIGNAL(connected()), this, SLOT(HandleConnected()));
+  }
+
+  /*----------------------------------
+  ----------HANDLE CONNECTED----------
+  ----------------------------------*/
+
+  void MessageHandler::HandleConnected() {
+    connect(socket_, SIGNAL(readyRead()), this, SLOT(ReadMessage()));
+    SocketConnected(); // Emits this signal
+  }
+
+  /*----------------------------
+  ----------SET SOCKET----------
+  ----------------------------*/
+
+  void MessageHandler::SetSocket(QTcpSocket* socket) {
+    socket_ = socket;
+    connect(socket_, SIGNAL(readyRead()), this, SLOT(ReadMessage()));
+  }
+
+
 /*----------------------------------------
 ------------------------------------------
 -----------------MESSAGE------------------

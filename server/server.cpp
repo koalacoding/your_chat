@@ -1,10 +1,9 @@
+#include <QMessageBox>
+
 #include "server.h"
 
-/*-----------------------------
-----------CONSTRUCTOR----------
------------------------------*/
 
-Server::Server(QWidget *parent) : tcpServer(0), networkSession(0) {
+Server::Server(QWidget *parent) : networkSession(0) {
   message_handler_ = new MessageHandler();
 
   statusLabel = new QLabel();
@@ -27,13 +26,11 @@ Server::Server(QWidget *parent) : tcpServer(0), networkSession(0) {
     networkSession = new QNetworkSession(config, this);
     connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
 
-    statusLabel->setText(tr("Opening network session."));
+    statusLabel->setText(tr("Opening network session..."));
     networkSession->open();
   } else {
     sessionOpened();
   }
-
-  connect(tcpServer, SIGNAL(newConnection()), this, SLOT(InitializeSocket()));
 }
 
 /*--------------------------------
@@ -89,6 +86,8 @@ void Server::sessionOpened()
                           "\n"
                           "Port: %2")
                        .arg(ipAddress).arg(tcpServer->serverPort()));
+
+  connect(tcpServer, SIGNAL(newConnection()), this, SLOT(InitializeSocket()));
 }
 
 /*-----------------------------------
@@ -96,8 +95,7 @@ void Server::sessionOpened()
 -----------------------------------*/
 
 void Server::InitializeSocket() {
-  message_handler_->socket_ = tcpServer->nextPendingConnection();
-  connect(message_handler_->socket_, SIGNAL(readyRead()), message_handler_, SLOT(ReadMessage()));
+  message_handler_->SetSocket(tcpServer->nextPendingConnection());
 }
 
 /*----------------------------

@@ -1,22 +1,25 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <QtWidgets>
-#include <QDialog>
+#include <QWidget>
+#include <QLabel>
 #include <QtNetwork>
+
 #include <message_handler/message_handler.h>
 
+
 class QLabel;
-class QTcpServer;
 class QNetworkSession;
+class QTcpServer;
 
 class Server : public QWidget {
-    Q_OBJECT
+  Q_OBJECT
 
   public:
     Server(QWidget *parent = 0);
-    MessageHandler* message_handler_;
+
     QLabel *statusLabel;
+    MessageHandler* message_handler_;
 
     ~Server();
 
@@ -25,8 +28,8 @@ class Server : public QWidget {
     void InitializeSocket();
 
   private:
-    QTcpServer *tcpServer;
     QNetworkSession *networkSession;
+    QTcpServer *tcpServer;
 };
 
 #endif

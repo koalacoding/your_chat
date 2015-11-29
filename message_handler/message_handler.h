@@ -16,14 +16,21 @@ class MessageHandler : public QWidget {
     quint16 block_size_;
     QString last_message_received_;
 
+
+    void ConnectSocketToHost(QString host_adress, quint16 port);
+    void SetSocket(QTcpSocket*);
+
     QString GetLastMessageReceived();
     void SetLastMessageReceived(QString);
     void SendMessageToPeer(QString);
 
   signals:
+    void SocketConnected();
     void MessageReceived();
 
   private slots:
+    void HandleConnected();
+
     void DisplayError(QAbstractSocket::SocketError);
     void EmitMessageReceivedSignal();
     void ReadMessage();

@@ -16,10 +16,12 @@ SOURCES += main.cpp\
            main_window/main_window.cpp \
            client/client.cpp \
            server/server.cpp \
-           message_handler/message_handler.cpp
+           message_handler/message_handler.cpp \
+    menu_bar/server/server_options.cpp
 
 
 HEADERS  += main_window/main_window.h \
             client/client.h \
             server/server.h \
-            message_handler/message_handler.h
+            message_handler/message_handler.h \
+    menu_bar/server/server_options.h

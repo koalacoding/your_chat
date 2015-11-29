@@ -14,8 +14,6 @@ Server::Server(QWidget *parent) {
 ----------SESSION OPENED----------
 --------------------------------*/
 
-#include <iostream>
-
 void Server::GetPublicIp()
 {
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);
@@ -55,8 +53,6 @@ void Server::StartServer(QNetworkReply *reply) {
                           "\n"
                           "Port: %2")
                        .arg(QString::fromStdString(ip_address)).arg(tcpServer->serverPort()));
-
-  std::cout << QHostAddress(QHostAddress::LocalHost).toString().toStdString() << std::endl;
 
   connect(tcpServer, SIGNAL(newConnection()), this, SLOT(InitializeSocket()));
 }

@@ -1,4 +1,5 @@
 #include "main_window.h"
+#include "menu_bar/server/server_options.h"
 
 /*-----------------------------
 ----------CONSTRUCTOR----------
@@ -40,9 +41,11 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
   void MainWindow::GenerateMenuBar() {
     menu_bar_ = new QMenuBar;
+    ServerOptions* t = new ServerOptions;
     server_menu_ = menu_bar_->addMenu(tr("Server"));
     server_menu_options_ = new QAction(tr("&Options"), server_menu_);
     server_menu_->addAction(server_menu_options_);
+    connect(server_menu_options_, SIGNAL(triggered()), t, SLOT(Show()));
   }
 
   /*------------------------------------

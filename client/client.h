@@ -33,7 +33,7 @@ class Client : public QWidget {
 
   private slots:
     void HandleDisconnected();
-    void ConnectToServer();
+    void ConnectToHost();
     void DisconnectFromServer();
     void sessionOpened();
 

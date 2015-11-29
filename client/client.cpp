@@ -74,18 +74,16 @@ Client::Client(QWidget *parent) : networkSession(0) {
     }
 }
 
-/*-----------------------------------
-----------CONNECT TO SERVER----------
------------------------------------*/
+/*---------------------------------
+----------CONNECT TO HOST----------
+---------------------------------*/
 
-void Client::ConnectToServer()
+void Client::ConnectToHost()
 {
   QString host_address = hostCombo->currentText();
   quint16 port = portLineEdit->text().toInt();
 
   message_handler_->ConnectSocketToHost(host_address, port);
-
-  connect(message_handler_->socket_, SIGNAL(disconnected()), this, SLOT(HandleDisconnected()));
 }
 
 /*-------------------------------------

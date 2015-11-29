@@ -76,11 +76,12 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
 
         connectGridGroupBox->setLayout(layout);
 
-        connect(connect_button, SIGNAL(clicked()), client, SLOT(ConnectToServer()));
+        connect(connect_button, SIGNAL(clicked()), client, SLOT(ConnectToHost()));
         connect(client->message_handler_, SIGNAL(SocketConnected()), this,
                 SLOT(DisableConnectButton()));
         connect(disconnect_button, SIGNAL(clicked()), client, SLOT(DisconnectFromServer()));
-        connect(client, SIGNAL(DisconnectedFromServer()), this, SLOT(EnableConnectButton()));
+        connect(client->message_handler_, SIGNAL(SocketDisconnected()), this,
+                SLOT(EnableConnectButton()));
     }
 
     /*-------------------------------------------------

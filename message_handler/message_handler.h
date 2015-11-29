@@ -26,10 +26,13 @@ class MessageHandler : public QWidget {
 
   signals:
     void SocketConnected();
+    void SocketDisconnected();
+
     void MessageReceived();
 
   private slots:
     void HandleConnected();
+    void HandleDisconnected();
 
     void DisplayError(QAbstractSocket::SocketError);
     void EmitMessageReceivedSignal();

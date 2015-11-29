@@ -58,6 +58,7 @@ void MessageHandler::DisplayError(QAbstractSocket::SocketError socket_error) {
     socket_->connectToHost(host_address, port);
 
     connect(socket_, SIGNAL(connected()), this, SLOT(HandleConnected()));
+    connect(socket_, SIGNAL(disconnected()), this, SLOT(HandleDisconnected()));
   }
 
   /*----------------------------------
@@ -67,6 +68,14 @@ void MessageHandler::DisplayError(QAbstractSocket::SocketError socket_error) {
   void MessageHandler::HandleConnected() {
     connect(socket_, SIGNAL(readyRead()), this, SLOT(ReadMessage()));
     SocketConnected(); // Emits this signal
+  }
+
+  /*-------------------------------------
+  ----------HANDLE DISCONNECTED----------
+  -------------------------------------*/
+
+  void MessageHandler::HandleDisconnected() {
+    SocketDisconnected(); // Emits this signal
   }
 
   /*----------------------------

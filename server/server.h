@@ -24,8 +24,9 @@ class Server : public QWidget {
     ~Server();
 
   private slots:
-    void Start();
+    void GetPublicIp();
     void InitializeSocket();
+    void StartServer(QNetworkReply*);
 
   private:
     QTcpServer *tcpServer;

@@ -4,9 +4,7 @@
 ----------CONSTRUCTOR----------
 -----------------------------*/
 
-Client::Client(QWidget *parent) : networkSession(0) {
-    QNetworkConfigurationManager manager;
-
+Client::Client(QWidget *parent) {
     message_handler_ = new MessageHandler();
 
     hostLabel = new QLabel(tr("P&eer IP:"));
@@ -51,27 +49,6 @@ Client::Client(QWidget *parent) : networkSession(0) {
     portLabel->setBuddy(portLineEdit);
 
     portLineEdit->setFocus();
-
-
-    if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
-        // Get saved network configuration
-        QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
-        settings.beginGroup(QLatin1String("QtNetwork"));
-        const QString id = settings.value(QLatin1String("DefaultNetworkConfiguration")).toString();
-        settings.endGroup();
-
-        // If the saved network configuration is not currently discovered use the system default
-        QNetworkConfiguration config = manager.configurationFromIdentifier(id);
-        if ((config.state() & QNetworkConfiguration::Discovered) !=
-            QNetworkConfiguration::Discovered) {
-            config = manager.defaultConfiguration();
-        }
-
-        networkSession = new QNetworkSession(config, this);
-        connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
-
-        networkSession->open();
-    }
 }
 
 /*---------------------------------
@@ -92,26 +69,6 @@ void Client::ConnectToHost()
 
 void Client::HandleDisconnected() {
   DisconnectedFromServer(); // Emits this signal
-}
-
-/*--------------------------------
-----------SESSION OPENED----------
---------------------------------*/
-
-void Client::sessionOpened()
-{
-    // Save the used configuration
-    QNetworkConfiguration config = networkSession->configuration();
-    QString id;
-    if (config.type() == QNetworkConfiguration::UserChoice)
-        id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
-    else
-        id = config.identifier();
-
-    QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
-    settings.beginGroup(QLatin1String("QtNetwork"));
-    settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
-    settings.endGroup();
 }
 
 /*----------------------------

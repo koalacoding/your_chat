@@ -35,10 +35,6 @@ class Client : public QWidget {
     void HandleDisconnected();
     void ConnectToHost();
     void DisconnectFromServer();
-    void sessionOpened();
-
-  private:
-    QNetworkSession *networkSession;
 };
 
 #endif

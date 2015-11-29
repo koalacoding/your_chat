@@ -24,11 +24,10 @@ class Server : public QWidget {
     ~Server();
 
   private slots:
-    void sessionOpened();
+    void Start();
     void InitializeSocket();
 
   private:
-    QNetworkSession *networkSession;
     QTcpServer *tcpServer;
 };
 

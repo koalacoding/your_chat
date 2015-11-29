@@ -25,6 +25,11 @@ public:
 private:
   Client* client;
   Server* server;
+
+  QMenuBar* menu_bar_;
+  QMenu* server_menu_;
+  QAction* server_menu_options_;
+
   QGroupBox *chatGridGroupBox;
   QTextEdit *messages_text_edit;
   QLineEdit *message_line_edit;
@@ -35,6 +40,7 @@ private:
   QGroupBox *yourInformationsGridGroupBox;
   QString GetSendMessageLineEditText();
 
+  void GenerateMenuBar();
   void generateChatGrid();
   void generateConnectGrid(Client* client);
   void generateYourInformationsGrid(Server* server);

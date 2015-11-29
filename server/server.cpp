@@ -56,6 +56,8 @@ void Server::StartServer(QNetworkReply *reply) {
                           "Port: %2")
                        .arg(QString::fromStdString(ip_address)).arg(tcpServer->serverPort()));
 
+  std::cout << QHostAddress(QHostAddress::LocalHost).toString().toStdString() << std::endl;
+
   connect(tcpServer, SIGNAL(newConnection()), this, SLOT(InitializeSocket()));
 }
 
